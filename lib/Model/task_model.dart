@@ -4,6 +4,7 @@ class Task {
   String description;
   DateTime dueDate;
   String priority;
+  String status;
 
   Task({
     this.id, 
@@ -11,6 +12,7 @@ class Task {
     required this.description,
     required this.dueDate,
     required this.priority,
+    required this.status
   });
 
   // Convert Task to Map (for inserting/updating in SQLite)
@@ -21,6 +23,7 @@ class Task {
       'description': description,
       'dueDate': dueDate.toIso8601String(), 
       'priority': priority,
+      'status':status
     };
   }
 
@@ -32,6 +35,7 @@ class Task {
       description: map['description'],
       dueDate: DateTime.parse(map['dueDate']),
       priority: map['priority'],
+      status: map['status']
     );
   }
 }

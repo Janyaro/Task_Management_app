@@ -18,11 +18,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   String? priority;
   DateTime? _selectedDate;
   final formkey = GlobalKey<FormState>();
-
+  String? status; 
+  final List<String> statusOption = ['pending' , 'complete'];
   final List<String> priorityOptions = ['High', 'Medium', 'Low'];
   final DateTime today = DateTime.now(); // ✅ Added this line
 
-  Future<void> _pickDueDate(BuildContext context) async {
+  Future<void> _pickDueDate(BuildContext context, TaskProvider taskprovider) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: today,
@@ -30,9 +31,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       lastDate: DateTime(today.year + 5),
     );
     if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-      });
+      taskprovider.setDueDate(picked);
     }
   }
 
@@ -65,12 +64,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               maxline: 5,
             ),
             SizedBox(height: media.height * 0.03),
+            Consumer<TaskProvider>(builder: (context , value , child){
+              return 
             DropdownButtonFormField<String>(
-              value: priority,
+              value: value.priority,
               isExpanded: true,
               decoration: InputDecoration(
                 labelText: 'Select Priority',
-                
                   fillColor: Colors.grey.shade300,
                   filled: true,
                 border: OutlineInputBorder(
@@ -86,14 +86,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 );
               }).toList(),
               onChanged: (val) {
-                setState(() {
-                  priority = val;
-                });
+                taskProvier.setPriority(val);
               },
-            ),
-            SizedBox(height: media.height * 0.03),
-            InkWell(
-              onTap: () => _pickDueDate(context),
+            );
+            }),
+            SizedBox(height: media.height * 0.02,),
+InkWell(
+              onTap: () => _pickDueDate(context, taskProvier),
               child: InputDecorator(
                 decoration: InputDecoration(
                   
@@ -122,13 +121,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     description: descriptionController.text,
     priority: priority ?? 'Low',
     dueDate: _selectedDate ?? DateTime.now(),
+
   );
-  taskProvier.addTask(task).then((val)=>{
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data is saved into the database')))
-  }).onError((StackTrace , error)=>{
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString())))
-  });
-  Navigator.pop(context);
+
             })
           ],
         ),

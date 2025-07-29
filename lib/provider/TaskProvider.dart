@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:task_management_app/Database/dbHelper.dart';
-import '../Model/task_model.dart';
 
 class TaskProvider extends ChangeNotifier {
-  final DBHelper _dbHelper = DBHelper();
 
-  Future<void> addTask(Task task) async {
-    await _dbHelper.insertTask(task);
-    notifyListeners(); 
-  }
+String? _status;
+String? _priority;
+DateTime? _dueDate;
 
-  Future<List<Task>> getTasks() async {
-    return await _dbHelper.fetchTasks();
-  }
+String? get status => _status;
+String? get priority => _priority;
+DateTime? get dueDate => _dueDate;
 
-  Future<void> deleteTask(int id) async {
-    await _dbHelper.deleteTask(id);
-    notifyListeners();
-  }
+void setstatus (String? value){
+  _status = value;
+  notifyListeners();
+}
 
-  Future<void> updateTask(Task task) async {
-    await _dbHelper.updateTask(task);
-    notifyListeners();
-  }
+void setPriority(String? value) {
+  _priority = value;
+  notifyListeners();
+}
+
+void setDueDate(DateTime? date) {
+  _dueDate = date;
+  notifyListeners();
+}
+
 }
