@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:task_management_app/Database/dbHelper.dart';
 import 'package:task_management_app/Model/task_model.dart';
 import 'package:task_management_app/View/TaskScreens/add_task_screen.dart';
+import 'package:task_management_app/provider/TaskProvider.dart';
+
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
 
@@ -13,6 +16,7 @@ class _TaskScreenState extends State<TaskScreen> {
   final DBHelper dbHelper = DBHelper();
   @override
   Widget build(BuildContext context) {
+    final taskprovider = Provider.of<TaskProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Task'),
