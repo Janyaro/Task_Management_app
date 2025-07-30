@@ -52,13 +52,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           children: [
             SizedBox(height: media.height * 0.04,),
             ReuseableTextform(
-              emailController: titleController,
+              controller: titleController,
               hintText: 'Task title',
               validatorText: 'Task title is required',
             ),
             SizedBox(height: media.height * 0.03),
             ReuseableTextform(
-              emailController: descriptionController,
+              controller: descriptionController,
               hintText: 'Description',
               validatorText: 'Description is required',
               maxline: 5,
@@ -115,7 +115,7 @@ InkWell(
               ),
             ),
             SizedBox(height: media.height * 0.04,),
-            ReuseableBtn(title: "Add Task", ontap: (){
+            ReuseableBtn(isloading: false, title: "Add Task", ontap: (){
               final task = Task(
     title: titleController.text,
     description: descriptionController.text,

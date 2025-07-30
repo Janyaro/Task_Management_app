@@ -27,7 +27,6 @@ class DBHelper {
         description TEXT,
         dueDate TEXT,
         priority TEXT,
-        status TEXT
       )'''
     );
   }

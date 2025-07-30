@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class ReuseableBtn extends StatelessWidget {
   final String title;
  final VoidCallback ontap;
-  const ReuseableBtn({super.key, required this.title, required this.ontap});
+ final bool isloading;
+  const ReuseableBtn({super.key, required this.title, required this.ontap, required this.isloading});
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +17,8 @@ class ReuseableBtn extends StatelessWidget {
                       color: Colors.deepPurple,
                       borderRadius: BorderRadius.circular(8)
                     ),
-                    child:const Center(
-                      child: Text('Login', style: TextStyle(fontSize: 23 , color: Colors.white),),
+                    child: Center(
+                      child:isloading ?  CircularProgressIndicator(color: Colors.white,) :Text('Login', style: TextStyle(fontSize: 23 , color: Colors.white),),
                     ),
                   ),
     );

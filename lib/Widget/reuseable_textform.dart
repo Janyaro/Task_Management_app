@@ -1,41 +1,45 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ReuseableTextform extends StatelessWidget {
-  final TextEditingController emailController;
+  final TextEditingController controller;
   final String hintText;
   final String validatorText;
   final IconData? icon;
+  final IconData? suffixIcon;
   final int maxline;
-
-  const ReuseableTextform({super.key, required this.emailController, required this.hintText, required this.validatorText,  this.icon  , this.maxline = 1});
+  final bool isVisibility;
+  const ReuseableTextform({super.key, required this.controller, required this.hintText, required this.validatorText,  this.icon  ,this.suffixIcon ,this.maxline = 1 , this.isVisibility = false});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-                controller: emailController,
-                maxLines: maxline,
-                decoration: InputDecoration(
-                  
-                  contentPadding: EdgeInsets.all(15),
-                  prefixIcon: Icon(icon),
-                  hintText: hintText,
-                  hintStyle: TextStyle(
-                    color: Colors.blue.shade800
-                  ),
-                  border:OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(4)
-                  ),
-                  
-                  fillColor: Colors.grey.shade300,
-                  filled: true
+              controller: controller,
+              maxLines: maxline,
+              obscureText: isVisibility,
+              decoration: InputDecoration(  
+                contentPadding: EdgeInsets.all(15),
+                prefixIcon: Icon(icon),
+                suffixIcon: Icon(suffixIcon),
+                hintText: hintText,
+                hintStyle: TextStyle(
+                  color: Colors.blue.shade800
                 ),
-                validator: (val){
-                  if(val == null || val.isEmpty){
-                    return hintText;
-                  }
-                  return null;
-                },
-              );
+                border:OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(4)
+                ),
+                
+                fillColor: Colors.grey.shade300,
+                filled: true
+              ),
+              validator: (val){
+                if(val == null || val.isEmpty){
+                  return hintText;
+                }
+                return null;
+              },
+            );
   }
 }
