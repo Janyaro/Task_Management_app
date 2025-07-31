@@ -5,6 +5,7 @@ import 'dart:io';
 import '../Model/task_model.dart'; // adjust the path if needed
 
 class DBHelper {
+  
   static Database? _db;
 
   Future<Database> get db async {
@@ -15,7 +16,7 @@ class DBHelper {
 
   Future<Database> _initDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = join(directory.path, 'TaskDB.db');
+    String path = join(directory.path, 'AllTaskDB.db');
     return openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
@@ -27,6 +28,7 @@ class DBHelper {
         description TEXT,
         dueDate TEXT,
         priority TEXT,
+        status TEXT
       )'''
     );
   }
@@ -42,6 +44,28 @@ class DBHelper {
     final result = await dbClient.query('tasks');
     return result.map((e) => Task.fromMap(e)).toList();
   }
+  
+  // get the all high prioritize task
+  Future<List<Task>> fetchTasksByPriority (String priority)async{
+  final dbClient = await db;
+  final result = await dbClient.query(
+    'tasks',
+    where: 'priority = ?',
+    whereArgs: [priority],
+  );
+
+  return result.map((e) => Task.fromMap(e)).toList();
+  }
+
+  Future<List<Task>> fetchTasksByStatus(String status) async {
+  final dbClient = await db;
+  final result = await dbClient.query(
+    'tasks',
+    where: 'status = ?',
+    whereArgs: [status],
+  );
+  return result.map((e) => Task.fromMap(e)).toList();
+}
 
   Future<int> deleteTask(int id) async {
     final dbClient = await db;

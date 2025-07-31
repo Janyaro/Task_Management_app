@@ -18,7 +18,7 @@ class ReuseableBtn extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8)
                     ),
                     child: Center(
-                      child:isloading ?  CircularProgressIndicator(color: Colors.white,) :Text('Login', style: TextStyle(fontSize: 23 , color: Colors.white),),
+                      child:isloading ?  CircularProgressIndicator(color: Colors.white,) :Text(title, style: TextStyle(fontSize: 23 , color: Colors.white),),
                     ),
                   ),
     );

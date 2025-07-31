@@ -1,12 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:task_management_app/View/Auth/login_screen.dart';
+import 'package:task_management_app/View/root_screen.dart';
 
 class AuthService {
 final auth = FirebaseAuth.instance;
 
 final firestore = FirebaseFirestore.instance;
 
+// for check the user is login or not
 
+Future<void> checkUser (BuildContext context)async{
+  final user = await auth.currentUser;
+  if(user != null){
+    Navigator.push(context , MaterialPageRoute(builder: (context)=> RootScreen()));
+  }
+  else{
+     Navigator.push(context , MaterialPageRoute(builder: (context)=> LoginScreen()));
+  }
+}
 // for create the new user 
  Future<User?> RegisterUser ( String username , String email , String password )async{
   try {

@@ -7,7 +7,7 @@ class ReuseableTextform extends StatelessWidget {
   final String hintText;
   final String validatorText;
   final IconData? icon;
-  final IconData? suffixIcon;
+  final IconButton? suffixIcon;
   final int maxline;
   final bool isVisibility;
   const ReuseableTextform({super.key, required this.controller, required this.hintText, required this.validatorText,  this.icon  ,this.suffixIcon ,this.maxline = 1 , this.isVisibility = false});
@@ -19,9 +19,9 @@ class ReuseableTextform extends StatelessWidget {
               maxLines: maxline,
               obscureText: isVisibility,
               decoration: InputDecoration(  
-                contentPadding: EdgeInsets.all(15),
+                contentPadding:const EdgeInsets.all(15),
                 prefixIcon: Icon(icon),
-                suffixIcon: Icon(suffixIcon),
+                suffixIcon: suffixIcon ,
                 hintText: hintText,
                 hintStyle: TextStyle(
                   color: Colors.blue.shade800

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/Service/Auth_service.dart';
+import 'package:task_management_app/View/Auth/login_screen.dart';
 import 'package:task_management_app/Widget/reuseable_btn.dart';
 import 'package:task_management_app/provider/Authentication_provider.dart';
 
@@ -33,6 +34,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child:Text('No user find'),
           );
           }
+          else if (!snapshot.hasData || snapshot.data == null) {
+  return const Center(child: Text('No user found'));
+}
+
           final data = snapshot.data!;
           return  Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -48,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             SizedBox(height: media.height * 0.02,),
             TextFormField(
-              controller: data['username'],
+              initialValue: data['uid'],
               readOnly: true,
               decoration: InputDecoration(
                   
@@ -66,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )),
              SizedBox(height: media.height * 0.02,),
             TextFormField(
-              controller: data['uid'],
+              initialValue: data['username'],
               readOnly: true,
               decoration: InputDecoration(
                   
@@ -84,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )),
              SizedBox(height: media.height * 0.02,),
             TextFormField(
-              controller: data['email'],
+              initialValue: data['email'],
               readOnly: true,
               decoration: InputDecoration(
                   
@@ -103,7 +108,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
            SizedBox(height: media.height * 0.02,),
           Consumer<AuthenticationProvider>(builder: (context , value, child){
             return ReuseableBtn(isloading: value.isloading, title: 'Logout', ontap: ()async{
-            await authService.logout();
+              value.setloading(true);
+            await authService.logout().then((val){
+              value.setloading(false);
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginScreen()));
+            }).onError((error,StackTrace){
+              value.setloading(false);
+            });
           
            });
           })

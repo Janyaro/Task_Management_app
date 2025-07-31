@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_management_app/View/Auth/login_screen.dart';
+import 'package:task_management_app/View/splash_screen.dart';
 import 'package:task_management_app/provider/TaskProvider.dart';
 import 'package:task_management_app/provider/Authentication_provider.dart';
 import 'package:task_management_app/provider/bottonNavigationProvider.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           titleTextStyle: TextStyle(fontSize: 23 , color: Colors.black , fontWeight: FontWeight.w500)),
 
       ),
-      home:const LoginScreen(),
+      home:const SplashScreen(),
     );
   }
 }

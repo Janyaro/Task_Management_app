@@ -45,13 +45,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: media.height * 0.03,
                 ),
-                 ReuseableTextform(
+                Consumer<AuthenticationProvider>(builder: (context ,value ,child ){
+                  return ReuseableTextform(
+                    isVisibility: value.isVisibility,
+                  suffixIcon:  IconButton(onPressed: (){
+                    value.toogleVisibility();
+                  }, icon:value.isVisibility ? Icon(Icons.visibility_off) : Icon(Icons.visibility)) ,
                   controller: passwordController,
                   hintText: 'Password here ',
                    validatorText:'password required',
                     icon: Icons.password,
                    
-                   ),
+                   );
+                }),
+                 
                  Align(
                   alignment: Alignment.bottomRight,
                   child: TextButton(onPressed: (){
@@ -61,19 +68,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
                 Consumer<AuthenticationProvider>(builder: (context , value , child){
-                  return ReuseableBtn(isloading:  value.isloading, title: 'Login', ontap: () async {
+                  return ReuseableBtn(isloading:  value.isloading, title: 'Login', 
+  ontap: () async {
   if (!formkey.currentState!.validate()) return;
 
   value.setloading(true); // Start loading
-  await authService.loginUser(emailController.text, passwordController.text).then((val) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const RootScreen()));
-  }).onError((error, stackTrace) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Login failed: ${error.toString()}')),
+
+  try {
+    final result = await authService.loginUser(
+      emailController.text.trim(),
+      passwordController.text.trim(),
     );
-  });
-  value.setloading(false); // Stop loading
+
+    if (result != null) {
+      // ✅ Login successful
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const RootScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login failed: Invalid credentials')),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Login failed: ${e.toString()}')),
+    );
+  }
+
+  value.setloading(false); 
 },
+
 );
                 }),
                   

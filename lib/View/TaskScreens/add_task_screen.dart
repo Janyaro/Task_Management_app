@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_management_app/Database/dbHelper.dart';
 import 'package:task_management_app/Model/task_model.dart';
+import 'package:task_management_app/View/root_screen.dart';
 import 'package:task_management_app/Widget/reuseable_btn.dart';
 import 'package:task_management_app/Widget/reuseable_textform.dart';
+import 'package:task_management_app/provider/Authentication_provider.dart';
 import 'package:task_management_app/provider/TaskProvider.dart';
 
 class AddTaskScreen extends StatefulWidget {
@@ -16,13 +19,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   String? priority;
-  DateTime? _selectedDate;
+
   final formkey = GlobalKey<FormState>();
   String? status; 
   final List<String> statusOption = ['pending' , 'complete'];
   final List<String> priorityOptions = ['High', 'Medium', 'Low'];
-  final DateTime today = DateTime.now(); // ✅ Added this line
-
+  final DateTime today = DateTime.now();
+  final dbhelper = DBHelper();
   Future<void> _pickDueDate(BuildContext context, TaskProvider taskprovider) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -91,7 +94,36 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             );
             }),
             SizedBox(height: media.height * 0.02,),
-InkWell(
+            SizedBox(height: media.height * 0.03),
+            Consumer<TaskProvider>(builder: (context , value , child){
+              return 
+            DropdownButtonFormField<String>(
+              value: value.status,
+              isExpanded: true,
+              decoration: InputDecoration(
+                labelText: 'Select Status',
+                  fillColor: Colors.grey.shade300,
+                  filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(4),
+                  borderSide: BorderSide.none
+                ),
+              ),
+              dropdownColor: Colors.grey.shade200,
+              items: statusOption.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (val) {
+                taskProvier.setStatus(val);
+              },
+            );
+            }),
+            SizedBox(height: media.height * 0.02,),
+
+             InkWell(
               onTap: () => _pickDueDate(context, taskProvier),
               child: InputDecorator(
                 decoration: InputDecoration(
@@ -104,27 +136,56 @@ InkWell(
                     borderRadius: BorderRadius.circular(4)
                   ),
                 ),
-                child: Text(
-                  _selectedDate == null
-                      ? 'Select Due Date'
-                      : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                  style: TextStyle(
-                    color: _selectedDate == null ? Colors.grey : Colors.black,
-                  ),
-                ),
+                child:  Text(
+  taskProvier.dueDate == null
+    ? 'Select Due Date'
+    : '${taskProvier.dueDate!.day}/${taskProvier.dueDate!.month}/${taskProvier.dueDate!.year}',
+  style: TextStyle(
+    color: taskProvier.dueDate == null ? Colors.grey : Colors.black,
+  ),
+),
+
               ),
             ),
             SizedBox(height: media.height * 0.04,),
-            ReuseableBtn(isloading: false, title: "Add Task", ontap: (){
-              final task = Task(
+           Consumer<AuthenticationProvider>(builder: (context , value , child){
+            return ReuseableBtn(
+              isloading: value.isloading,
+               title: "Add Task",
+ontap: () async {
+  if (!formkey.currentState!.validate()) return;
+   
+  final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+  // final authProvider = Provider.of<AuthenticationProvider>(context, listen: false);
+
+  final task = Task(
     title: titleController.text,
     description: descriptionController.text,
-    priority: priority ?? 'Low',
-    dueDate: _selectedDate ?? DateTime.now(),
-
+    priority: taskProvider.priority ?? 'Low',
+    status: taskProvider.status ?? 'Pending',
+    dueDate: taskProvider.dueDate ?? DateTime.now(),
   );
+  value.setloading(true);
+  await dbhelper.insertTask(task).then((val){
+value.setloading(false);
+  titleController.clear();
+  descriptionController.clear();
+  taskProvider.setPriority(null);
+  taskProvider.setDueDate(null);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Task added successfully")),
+    );
+Navigator.push(context, MaterialPageRoute(builder: (context)=> RootScreen()));
+  }).onError((error, StackTrace){
+    value.setloading(false);
+  });
 
-            })
+  
+},
+
+            );
+           })
+            
           ],
         ),
        
