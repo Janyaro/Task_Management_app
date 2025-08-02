@@ -46,7 +46,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   if (!formkey.currentState!.validate()) return;
 
                 value.setloading(true);
-                 await authService.RegisterUser(
+                 await authService.registerUser(
                         userController.text, 
                         emailController.text, 
                         passwordContreoller.text).then((val){

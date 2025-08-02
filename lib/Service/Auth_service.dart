@@ -5,79 +5,103 @@ import 'package:task_management_app/View/Auth/login_screen.dart';
 import 'package:task_management_app/View/root_screen.dart';
 
 class AuthService {
-final auth = FirebaseAuth.instance;
+  final auth = FirebaseAuth.instance;
+  final firestore = FirebaseFirestore.instance;
 
-final firestore = FirebaseFirestore.instance;
+  // Check if user is logged in
+  Future<void> checkUser(BuildContext context) async {
+    final user = auth.currentUser;
+    print('Check user is available or not: $user');
 
-// for check the user is login or not
-
-Future<void> checkUser (BuildContext context)async{
-  final user = await auth.currentUser;
-  if(user != null){
-    Navigator.push(context , MaterialPageRoute(builder: (context)=> RootScreen()));
+    if (user != null) {
+      // User is logged in → Go to RootScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => RootScreen()),
+      );
+    } else {
+      // User not logged in → Go to LoginScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
   }
-  else{
-     Navigator.push(context , MaterialPageRoute(builder: (context)=> LoginScreen()));
+
+  // Register a new user
+  Future<User?> registerUser(String username, String email, String password) async {
+    try {
+      final result = await auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = result.user;
+
+      if (user != null) {
+        await firestore.collection('Userdata').doc(user.uid).set({
+          'uid': user.uid,
+          'username': username,
+          'email': email,
+        });
+      }
+
+      return user;
+    } catch (e) {
+      print('Register error: $e');
+      return null;
+    }
   }
-}
-// for create the new user 
- Future<User?> RegisterUser ( String username , String email , String password )async{
-  try {
-    final result = await auth.createUserWithEmailAndPassword(
-      email: email,
-       password: password
-       );
-       User? user = result.user;
-       if(user != null){
-       await firestore.collection('user').doc(user.uid).set({
-        'uid': user.uid,
-        'username':username,
-        'email': email
-       });
-       }
-       return user;
-  } catch (e) {
-    print('Sign in error ${e}');
-    return null;
+
+  // Login existing user
+  Future<User?> loginUser(String email, String password) async {
+    try {
+      final result = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return result.user;
+    } catch (e) {
+      print('Login error: $e');
+      return null;
+    }
   }
- }
 
-// for login the user 
-
-Future<User?> loginUser (String email , String password)async{
-try {
-final result = await auth.signInWithEmailAndPassword(email: email, password: password);
-  return result.user;
-} catch (e) {
- return null; 
-}
-}
-
-// for logout the user
-Future<void>logout()async{
-  await auth.signOut();
-}
- 
- // forget password
- Future<void>forgetPassword(String email)async{
-  await auth.sendPasswordResetEmail(email: email);
- }
-
-
-Future<Map<String , dynamic>?> getUserInfo () async{
-try {
-  final uid = FirebaseAuth.instance.currentUser!.uid;
-  final snapshots =await firestore.collection('user').doc(uid).get();
-  if(snapshots.exists){
-    return snapshots.data();
+  // Logout current user
+  Future<void> logout() async {
+    await auth.signOut();
   }
-  else{
-    return null;
-  }
-} catch (e) {
-  print('Error while fetching user data ${e}');
-  return null;
-}
-}
 
+  // Send password reset email
+  Future<void> forgetPassword(String email) async {
+    await auth.sendPasswordResetEmail(email: email);
+  }
+
+  // Fetch current logged-in user's info
+  Future<Map<String, dynamic>?> getUserInfo() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        print('User is not logged in');
+        return null;
+      }
+
+      final snapshot = await FirebaseFirestore.instance
+          .collection('Userdata') 
+          .doc(user.uid)
+          .get();
+
+      if (snapshot.exists) {
+        print("Fetched user data: ${snapshot.data()}");
+        return snapshot.data();
+      } else {
+        print('User document not found in Userdata collection');
+        return null;
+      }
+    } catch (e) {
+      print('Error while fetching user data: $e');
+      return null;
+    }
+  }
 }

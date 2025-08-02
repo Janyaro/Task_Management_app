@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: FutureBuilder(
         future: authService.getUserInfo(), 
         builder: (context , snapshot){
+          print('User data: ${snapshot.data}');
           if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(
               child: Text('Please wait'),
@@ -33,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text('No user find'),
             );
           }
+          print('User data: ${snapshot.data}');
           final data = snapshot.data!;
           return Padding(
   padding: const EdgeInsets.symmetric(horizontal: 10),

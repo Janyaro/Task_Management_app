@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_management_app/Database/dbHelper.dart';
 import 'package:task_management_app/Model/task_model.dart';
 import 'package:task_management_app/View/edit_screen.dart';
+import 'package:task_management_app/View/root_screen.dart';
 
 class DetailScreen extends StatefulWidget {
   final Task task;
@@ -46,7 +47,10 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   TextButton(
                     onPressed:(){
-                      dbhelper.deleteTask(widget.task.id!)
+                      dbhelper.deleteTask(widget.task.id!).then((val)=>{
+                        dbhelper.fetchTasks(),
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> RootScreen()))
+                      })
                       .then((val){
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Delete Successfully')));
                       })
@@ -54,7 +58,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error will occur during deletion the task')));
                       });
                     },
-                    child:Text('Delete')
+                    child:Text('Delete' , style: TextStyle(color: Colors.red),)
                   ),
                 ]
                ),

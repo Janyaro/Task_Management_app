@@ -50,21 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAV3yAKxPQjU4mPxvLE8-EcCgsa3QzPFSE',
-    appId: '1:633365782640:android:224e27e923be55fb7214b5',
-    messagingSenderId: '633365782640',
-    projectId: 'firbase-chatapp-93c5b',
-    databaseURL: 'https://firbase-chatapp-93c5b-default-rtdb.firebaseio.com',
-    storageBucket: 'firbase-chatapp-93c5b.appspot.com',
+    apiKey: 'AIzaSyAzszj8XnPBHPXtrTQFgLBF3OFu2pGs6yk',
+    appId: '1:546578599595:android:258a62a7f5d9bafd7cf1ee',
+    messagingSenderId: '546578599595',
+    projectId: 'chatapp-f18cd',
+    storageBucket: 'chatapp-f18cd.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDL3IS3EN6QKFjnvrx2c1Ktge3EoOMojdY',
-    appId: '1:633365782640:ios:a9dd7074f028c3f47214b5',
-    messagingSenderId: '633365782640',
-    projectId: 'firbase-chatapp-93c5b',
-    databaseURL: 'https://firbase-chatapp-93c5b-default-rtdb.firebaseio.com',
-    storageBucket: 'firbase-chatapp-93c5b.appspot.com',
+    apiKey: 'AIzaSyCiz2OiYfJ_3JQq5Kk2PSKmId8OhTz1Nbo',
+    appId: '1:546578599595:ios:cec2bcdf30bca7a37cf1ee',
+    messagingSenderId: '546578599595',
+    projectId: 'chatapp-f18cd',
+    storageBucket: 'chatapp-f18cd.appspot.com',
     iosBundleId: 'com.example.taskManagementApp',
   );
 

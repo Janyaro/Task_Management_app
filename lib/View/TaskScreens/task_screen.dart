@@ -3,7 +3,6 @@ import 'package:task_management_app/Database/dbHelper.dart';
 import 'package:task_management_app/Model/task_model.dart';
 import 'package:task_management_app/View/TaskScreens/add_task_screen.dart';
 import 'package:task_management_app/View/detail_screen.dart';
-import 'package:task_management_app/View/root_screen.dart';
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -18,6 +17,8 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true
+        ,
         title:const Text('Task'),
         actions: [IconButton(onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (_)=> AddTaskScreen()));
